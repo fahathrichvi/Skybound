@@ -29,4 +29,5 @@ export const PRACTICE_LEVEL: LevelConfig = {
   width: PRACTICE.width, height: PRACTICE.height, spawn: PRACTICE.spawn, fallLimit: 1060,
   terrain: [], platforms: PRACTICE.platforms.map(platform => ({ ...platform, kind: 'solid' })),
   signs: PRACTICE.signs, regions: [{ from: 0, to: PRACTICE.width, name: 'Practice Meadow' }],
+  collectibles: [], blocks: [], checkpoints: [], enemies: [],
 };

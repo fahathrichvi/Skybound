@@ -16,6 +16,13 @@ describe('level data', () => {
       { ...LEVEL_1, spawn: { x: 190, y: 1000 } }, { ...LEVEL_1, regions: [] },
       { ...LEVEL_1, regions: [{ from: 32, to: 6144, name: 'Gap' }] },
       { ...LEVEL_1, fallLimit: 900 }, { ...LEVEL_1, signs: [{ x: 4, y: 8, title: '', text: 'Empty title' }] }];
+    invalid.push({ ...LEVEL_1, collectibles: [{ id: 'outside', kind: 'shard', x: 7000, y: 10 }] });
+    invalid.push({ ...LEVEL_1, collectibles: [{ id: 'same', kind: 'shard', x: 50, y: 50 }], blocks: [{ id: 'same', kind: 'breakable', x: 60, y: 60 }] });
+    invalid.push({ ...LEVEL_1, blocks: [{ id: 'bad', kind: 'mystery', x: 50, y: 50, reward: 0 }] });
+    invalid.push({ ...LEVEL_1, checkpoints: [{ id: 'bad', x: 50, y: 50, respawn: { x: -1, y: 50 } }] });
+    invalid.push({ ...LEVEL_1, enemies: [{ id: 'bad', kind: 'blobling', x: 80, y: 80, patrolFrom: 90, patrolTo: 120, speed: 40 }] });
+    invalid.push({ ...LEVEL_1, enemies: [{ id: 'bad', kind: 'wingling', x: 80, y: 80, patrolFrom: 20, patrolTo: 120, speed: 40, waveHeight: 0 }] });
+    invalid.push({ ...LEVEL_1, collectibles: [{ id: 'duplicate', kind: 'shard', x: 50, y: 50 }], enemies: [{ id: 'duplicate', kind: 'blobling', x: 80, y: 80, patrolFrom: 20, patrolTo: 120, speed: 40 }] });
     for (const value of invalid) expect(() => validateLevel(value)).toThrow();
   });
   it('recovers to a validated practice course when a definition fails', () => {

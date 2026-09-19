@@ -14,6 +14,6 @@ describe('scene bridge', () => {
   });
 });
 describe('preference validation', () => {
-  it('rejects malformed and non-boolean values', () => { for (const value of [null, [], 8, { highContrast: 'true', reducedMotion: 1 }]) expect(validatePreferences(value)).toEqual({ highContrast: false, reducedMotion: false }); });
-  it('keeps supported values without accepting unknown fields', () => expect(validatePreferences({ reducedMotion: true, highContrast: false, extra: 1 })).toEqual({ reducedMotion: true, highContrast: false }));
+  it('rejects malformed values and supplies safe audio defaults', () => { for (const value of [null, [], 8, { highContrast: 'true', reducedMotion: 1 }]) expect(validatePreferences(value)).toEqual({ highContrast: false, reducedMotion: false, casualMode: false, masterVolume: .7, musicVolume: .35, sfxVolume: .7 }); });
+  it('keeps supported values and clamps audio levels', () => expect(validatePreferences({ reducedMotion: true, highContrast: false, casualMode: true, masterVolume: 2, musicVolume: -.2, sfxVolume: .4, extra: 1 })).toEqual({ reducedMotion: true, highContrast: false, casualMode: true, masterVolume: 1, musicVolume: 0, sfxVolume: .4 }));
 });

@@ -18,6 +18,8 @@ try {
   await page.reload();
   await page.getByRole('button', { name: 'Open settings' }).click();
   assert.equal(await page.getByRole('checkbox', { name: /Reduced motion/ }).isChecked(), true);
+  await page.getByLabel('Master volume').press('End');
+  assert.equal(await page.getByLabel('Master volume').inputValue(), '1');
   await page.keyboard.press('Escape');
   await page.getByRole('link', { name: 'PLAY NOW' }).click();
   await page.getByText('1-1 / The Verdant Trail').waitFor();

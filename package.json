@@ -1,7 +1,8 @@
 {
   "name": "skybound-adventure",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.7.0",
+  "author": "Fahath Richvi",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
@@ -12,7 +13,10 @@
     "test:browser": "node scripts/browser-check.mjs",
     "test:movement": "node scripts/movement-check.mjs",
     "test:touch": "node scripts/touch-check.mjs",
-    "test:world": "node scripts/world-check.mjs"
+    "test:world": "node scripts/world-check.mjs",
+    "test:objects": "node scripts/objects-check.mjs",
+    "test:enemies": "node scripts/enemies-check.mjs",
+    "test:systems": "node scripts/systems-check.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

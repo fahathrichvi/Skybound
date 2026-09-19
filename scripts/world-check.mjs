@@ -12,7 +12,7 @@ async function until(test, label) {
   while (Date.now() - start < 12000) { const s = await read(); if (test(s)) return s; await page.waitForTimeout(25); }
   throw new Error(`${label}: ${JSON.stringify(await read())}`);
 }
-async function settle() { return until(s => s.grounded && Math.abs(s.vx) < 1, 'settle'); }
+async function settle() { return until(s => s.grounded && Math.abs(s.vx) < 1 && Math.abs(s.vy) < 1, 'settle'); }
 async function moveTo(x, sprint = false) {
   if (sprint) await page.keyboard.down('Shift');
   await page.keyboard.down('d'); await until(s => s.x >= x, `move to ${x}`);
@@ -27,7 +27,7 @@ async function leapTo(x, expectedY, sprint = true) {
 async function restart() { await page.locator('canvas').focus(); await page.keyboard.press('r'); await settle(); }
 try {
   await mkdir('artifacts', { recursive: true });
-  await page.goto('http://127.0.0.1:5173/?debug=true#/play');
+  await page.goto('http://127.0.0.1:5173/?debug=true&safe=true#/play');
   await page.getByText('1-1 / The Verdant Trail').waitFor(); await settle();
   const first = await read(); assert.equal(first.levelId, '1-1'); assert.equal(first.y, 960);
   assert.ok(first.tileCount > 1500); assert.equal(first.oneWayCount, 10);
@@ -39,7 +39,7 @@ try {
   await page.keyboard.up('Space'); await settle();
   assert.equal((await read()).y, 864, 'Land on top of the one-way ledge');
   await moveTo(813); await leapTo(1000, 768);
-  await moveTo(1125); await leapTo(1325, 672);
+  await moveTo(1125); await leapTo(1290, 672, false);
   assert.ok((await read()).cameraY < first.cameraY - 80, 'Camera follows the upper route vertically');
   await page.screenshot({ path: 'artifacts/stage3-upper-route.png', fullPage: true });
   await restart();
@@ -52,14 +52,15 @@ try {
   await moveTo(3550, true);
   assert.equal((await read()).region, 'Mossroot Hollow');
   await page.screenshot({ path: 'artifacts/stage3-cave.png', fullPage: true });
-  await moveTo(3860); await leapTo(4000, 1024, false);
+  await moveTo(3860, true); await leapTo(4000, 1024, false);
   await leapTo(4280, 960);
   await moveTo(4500); await leapTo(4690, 896);
   await moveTo(5330, true); await leapTo(5500, 928);
-  await moveTo(5590); await leapTo(5770, 896);
-  await moveTo(6129, true);
+  await moveTo(5590); await page.keyboard.down('d'); await page.keyboard.down('Space');
+  await until(s => s.objects.gems === 3 || s.completed, 'reach final gem'); await page.keyboard.up('Space'); await page.keyboard.up('d');
+  if (!(await read()).completed) { await settle(); await page.keyboard.down('d'); await until(s => s.completed, 'reach exit portal'); await page.keyboard.up('d'); }
   const end = await read();
-  assert.ok(end.x <= 6130); assert.ok(end.cameraX <= 4864); assert.equal(end.region, "The Trail's Edge");
+  assert.ok(end.x > 5850 && end.x <= 6130); assert.ok(end.cameraX <= 4864); assert.equal(end.region, "The Trail's Edge");
   assert.equal(end.recoveries, 0, 'Both lower routes are traversable without a reset');
   await page.screenshot({ path: 'artifacts/stage3-trail-edge.png', fullPage: true });
   await restart();

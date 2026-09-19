@@ -1,6 +1,6 @@
 import type { LevelConfig } from '../types';
 
-/** Stage 3 terrain pass. Collectibles, enemies, checkpoints and exit logic follow later. */
+/** World 1-1 data. Hazards and moving platforms follow in later stages. */
 export const LEVEL_1: LevelConfig = {
   version: 1, id: '1-1', name: 'The Verdant Trail', theme: 'emerald',
   width: 6144, height: 1280, tileSize: 32, spawn: { x: 192, y: 960 }, fallLimit: 1220,
@@ -51,4 +51,40 @@ export const LEVEL_1: LevelConfig = {
     { from: 4096, to: 5504, name: 'Sunlit Terraces' },
     { from: 5504, to: 6144, name: "The Trail's Edge" },
   ],
+  collectibles: [
+    { id: 's01', kind: 'shard', x: 304, y: 920 }, { id: 's02', kind: 'shard', x: 384, y: 920 },
+    { id: 's03', kind: 'shard', x: 464, y: 920 }, { id: 's04', kind: 'shard', x: 672, y: 808 },
+    { id: 's05', kind: 'shard', x: 752, y: 790 }, { id: 's06', kind: 'shard', x: 832, y: 808 },
+    { id: 's07', kind: 'shard', x: 1000, y: 708 }, { id: 's08', kind: 'shard', x: 1080, y: 688 },
+    { id: 's09', kind: 'shard', x: 1160, y: 708 }, { id: 'g01', kind: 'gem', x: 1392, y: 608 },
+    { id: 's10', kind: 'shard', x: 1660, y: 676 }, { id: 's11', kind: 'shard', x: 1760, y: 660 },
+    { id: 's12', kind: 'shard', x: 1984, y: 740 }, { id: 's13', kind: 'shard', x: 2112, y: 740 },
+    { id: 's14', kind: 'shard', x: 2500, y: 900 }, { id: 's15', kind: 'shard', x: 2600, y: 884 },
+    { id: 's16', kind: 'shard', x: 2800, y: 804 }, { id: 's17', kind: 'shard', x: 2930, y: 804 },
+    { id: 's18', kind: 'shard', x: 3200, y: 1030 }, { id: 'g02', kind: 'gem', x: 3500, y: 1028 },
+    { id: 's19', kind: 'shard', x: 3710, y: 1028 }, { id: 's20', kind: 'shard', x: 3860, y: 830 },
+    { id: 's21', kind: 'shard', x: 4320, y: 900 }, { id: 's22', kind: 'shard', x: 4540, y: 742 },
+    { id: 's23', kind: 'shard', x: 4950, y: 724 }, { id: 's24', kind: 'shard', x: 5100, y: 724 },
+    { id: 's25', kind: 'shard', x: 5400, y: 840 }, { id: 'g03', kind: 'gem', x: 5750, y: 822 },
+  ],
+  blocks: [
+    { id: 'm01', kind: 'mystery', x: 528, y: 820, reward: 5 },
+    { id: 'b01', kind: 'breakable', x: 896, y: 904 },
+    { id: 'm02', kind: 'mystery', x: 2720, y: 840, reward: 3 },
+    { id: 'b02', kind: 'breakable', x: 3744, y: 1024 },
+    { id: 'm03', kind: 'mystery', x: 5260, y: 804, reward: 5 },
+  ],
+  checkpoints: [
+    { id: 'c01', x: 2576, y: 960, respawn: { x: 2512, y: 960 } },
+    { id: 'c02', x: 4320, y: 960, respawn: { x: 4288, y: 960 } },
+  ],
+  enemies: [
+    { id: 'blob-01', kind: 'blobling', x: 1450, y: 960, patrolFrom: 1400, patrolTo: 1500, speed: 35 },
+    { id: 'wing-01', kind: 'wingling', x: 1870, y: 610, patrolFrom: 1690, patrolTo: 2100, speed: 82, waveHeight: 48 },
+    { id: 'blob-02', kind: 'blobling', x: 2980, y: 960, patrolFrom: 2860, patrolTo: 3040, speed: 78 },
+    { id: 'wing-02', kind: 'wingling', x: 3480, y: 660, patrolFrom: 3260, patrolTo: 3700, speed: 92, waveHeight: 52 },
+    { id: 'wing-03', kind: 'wingling', x: 4760, y: 680, patrolFrom: 4620, patrolTo: 4930, speed: 96, waveHeight: 44 },
+    { id: 'blob-05', kind: 'blobling', x: 5800, y: 896, patrolFrom: 5720, patrolTo: 5890, speed: 96 },
+  ],
+  exit: { id: 'exit-1-1', x: 5968, y: 896 },
 };
