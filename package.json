@@ -1,7 +1,7 @@
 {
   "name": "skybound-adventure",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.9.0",
   "author": "Fahath Richvi",
   "type": "module",
   "scripts": {
@@ -16,7 +16,8 @@
     "test:world": "node scripts/world-check.mjs",
     "test:objects": "node scripts/objects-check.mjs",
     "test:enemies": "node scripts/enemies-check.mjs",
-    "test:systems": "node scripts/systems-check.mjs"
+    "test:systems": "node scripts/systems-check.mjs",
+    "test:stage9": "node scripts/stage9-check.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.468.0",

@@ -38,6 +38,8 @@ export class LevelScene extends Phaser.Scene {
   private dying = false;
   private gameOver = false;
   private previousPlayerState = 'idle';
+  private windNoticeId?: number;
+  private activeWindZone?: number;
 
   constructor(private bridge: GameBridge, private reducedMotion: boolean, private definition: unknown, key = 'Level') { super(key); }
 
@@ -54,6 +56,11 @@ export class LevelScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, this.level.width, this.level.height);
     this.scenery = new ParallaxWorld(this, this.level, this.reducedMotion);
     this.world = new WorldBuilder(this, this.level);
+    for (const zone of this.level.windZones ?? []) {
+      const current = this.add.rectangle(zone.x + zone.width / 2, zone.y + zone.height / 2, zone.width, zone.height, 0xbde8cf, .055).setDepth(3);
+      current.setStrokeStyle(1, 0xd8f1be, .14);
+      if (!this.reducedMotion) this.tweens.add({ targets: current, alpha: .13, duration: 850, yoyo: true, repeat: -1, ease: 'Sine.inOut' });
+    }
     this.player = new Player(this, this.level.spawn.x, this.level.spawn.y, this.reducedMotion);
     this.world.connect(this.player);
     this.objects = new GameObjectSystem(this, this.level, this.player, {
@@ -146,6 +153,7 @@ export class LevelScene extends Phaser.Scene {
       return;
     }
     this.player.update(time, delta, this.controls.read());
+    this.applyWind(delta);
     if (this.player.state === 'jump' && this.previousPlayerState !== 'jump') this.bridge.emit({ type: 'sound', cue: 'jump' });
     if (this.player.state === 'land' && this.previousPlayerState !== 'land') this.bridge.emit({ type: 'sound', cue: 'land' });
     this.previousPlayerState = this.player.state; this.enemies.update(time, delta);
@@ -168,6 +176,15 @@ export class LevelScene extends Phaser.Scene {
       return true;
     }
     this.beginDefeat(result, 'Ari lost their light…'); return true;
+  }
+
+  private applyWind(delta: number) {
+    const x = this.player.sprite.x, y = this.player.body.center.y;
+    const zone = (this.level.windZones ?? []).find(candidate => x >= candidate.x && x <= candidate.x + candidate.width && y >= candidate.y && y <= candidate.y + candidate.height);
+    if (!zone) { this.windNoticeId = this.activeWindZone = undefined; return; }
+    this.player.body.setVelocityX(Phaser.Math.Clamp(this.player.body.velocity.x + zone.strength * delta / 1000, -520, 520));
+    const id = (this.level.windZones ?? []).indexOf(zone); this.activeWindZone = id;
+    if (this.windNoticeId !== id) { this.windNoticeId = id; this.bridge.emit({ type: 'announcement', message: zone.strength > 0 ? 'A tailwind carries Ari forward' : 'A crosswind presses against the trail' }); }
   }
 
   private beginDefeat(result: DamageResult, message: string) {
@@ -208,7 +225,7 @@ export class LevelScene extends Phaser.Scene {
       worldWidth: this.level.width, worldHeight: this.level.height, tileCount: this.world.tileCount,
       oneWayCount: this.level.platforms.filter(platform => platform.kind === 'one-way').length,
       parallax: this.scenery.layers.map(layer => layer.scrollFactorX), objects: this.objects.snapshot(), objectBodies: this.objects.diagnostics(),
-      combat: { ...this.vitals.snapshot(this.time.now), enemies: this.enemies.snapshot() }, run: this.run.snapshot(this.time.now),
+      combat: { ...this.vitals.snapshot(this.time.now), enemies: this.enemies.snapshot() }, run: this.run.snapshot(this.time.now), windZones: this.level.windZones?.length ?? 0, activeWindZone: this.activeWindZone,
       completed: this.completed, dying: this.dying, gameOver: this.gameOver };
     this.game.canvas.dataset.debug = JSON.stringify(snapshot);
     this.debugText?.setText(`FPS ${snapshot.fps.toFixed(0)}  ARI ${snapshot.x.toFixed(0)}, ${snapshot.y.toFixed(0)}\n${snapshot.state.toUpperCase()}  vx ${snapshot.vx.toFixed(0)}  vy ${snapshot.vy.toFixed(0)}${snapshot.paused ? '  PAUSED' : ''}`);

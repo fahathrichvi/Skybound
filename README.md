@@ -2,7 +2,7 @@
 
 An original fantasy browser platformer developed by **Fahath Richvi** with React, TypeScript, Vite, and Phaser 3. Ari, a small explorer with a saffron scarf, follows lost crystals through floating kingdoms.
 
-**Milestone: Stage 8 complete - world map and progression.** Emerald Valley now has a connected stage map with completion badges, saved gem totals, sequential unlocking, and a clear distinction between playable content and upcoming stages. The Stage 2 practice course remains available at `#/practice`.
+**Milestone: Stage 9 complete - expanded Emerald Valley.** Moonlit Grove and Canopy Crossing are now playable World 1 stages, each with its own route names, collectible identities, enemy patrols, and wind-current challenges. The Stage 2 practice course remains available at `#/practice`.
 
 ## Run locally
 
@@ -24,7 +24,16 @@ npm run preview
 
 `dist/` is the production output. Hash-based routes work on static hosting without rewrite rules. Current asset paths assume hosting at the domain root. Set the name and version in `src/config/project.ts`; update HTML metadata and package metadata when renaming for distribution.
 
-## Stage 8 features
+## Stage 9 features
+
+- Added playable World 1-2 **Moonlit Grove** and World 1-3 **Canopy Crossing**, both routed from the Emerald Valley map after their preceding stage is complete.
+- Added authored region names, signs, checkpoints, exits, collectible IDs, mystery blocks, and enemy patrol layouts for each new course.
+- Added wind-current zones: visible shimmering airfields that push Ari horizontally and announce their direction on entry.
+- Moonlit Grove introduces a forgiving forward tailwind on the main route; Canopy Crossing adds stronger opposing and chained gusts for a more demanding final path.
+- Registered all three World 1 levels in the shared registry, with route-driven game initialization and level-specific HUD labels.
+- Added browser coverage for Stage 9 routing, saved map unlocks, authored enemy courses, and wind-zone activation.
+
+## Stage 8 features retained
 
 - A dedicated Emerald Valley map with four connected nodes: Verdant Trail, Moonlit Grove, Canopy Crossing, and the Forest Guardian encounter.
 - The Verdant Trail is immediately playable; completing it unlocks the next node through the existing local save record.
@@ -303,8 +312,14 @@ Added: `src/config/worldMap.ts` and `src/config/worldMap.test.ts`.
 
 Modified: `src/app/App.tsx`, `src/app/styles.css`, `src/config/project.ts`, `scripts/browser-check.mjs`, `package.json`, `package-lock.json`, and this README.
 
+## Files added or modified in Stage 9
+
+Added: `src/game/levels/world1/level2.ts`, `src/game/levels/world1/level3.ts`, and `scripts/stage9-check.mjs`.
+
+Modified: `src/game/levels/types.ts`, `src/game/levels/index.ts`, `src/game/world/levelData.ts`, `src/game/world/levelData.test.ts`, `src/game/scenes/LevelScene.ts`, `src/components/GameCanvas.tsx`, `src/app/App.tsx`, `src/config/worldMap.ts`, `src/config/project.ts`, `scripts/browser-check.mjs`, `package.json`, `package-lock.json`, and this README.
+
 ## Known limits and next stage
 
 Health pickups, difficulty presets, score combos, achievements, cloud sync, and multi-level unlock progression are not implemented yet. Completion records the current level but does not unlock another level. Platforms are stationary; moving-platform behavior is not implemented. Gamepad controls, physical mobile-device testing, PWA installation, and offline caching remain future work.
 
-**Next: Stage 9 - more stages:** implement World 1-2 and World 1-3, then introduce additional enemies and mechanics. Stage 8 stops here and waits for the next development instruction.
+**Next: Stage 10 - boss:** create the Forest Guardian with an introduction, health bar, attack phases, defeat flow, and World 1 completion. Stage 9 stops here and waits for the next development instruction.

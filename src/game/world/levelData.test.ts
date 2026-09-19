@@ -1,11 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { LEVEL_1 } from '../levels/world1/level1';
+import { LEVEL_2 } from '../levels/world1/level2';
+import { LEVEL_3 } from '../levels/world1/level3';
 import { PRACTICE_LEVEL } from '../levels/practice';
 import { buildTileData, canLandOnOneWay, regionAt, resolveLevel, validateLevel } from './levelData';
 
 describe('level data', () => {
-  it('accepts both the authored trail and original controller course', () => {
+  it('accepts all authored Emerald Valley routes and the controller course', () => {
     expect(() => validateLevel(LEVEL_1)).not.toThrow();
+    expect(() => validateLevel(LEVEL_2)).not.toThrow();
+    expect(() => validateLevel(LEVEL_3)).not.toThrow();
     expect(() => validateLevel(PRACTICE_LEVEL)).not.toThrow();
   });
   it('rejects malformed, unsupported and out-of-bounds geometry', () => {
@@ -22,6 +26,7 @@ describe('level data', () => {
     invalid.push({ ...LEVEL_1, checkpoints: [{ id: 'bad', x: 50, y: 50, respawn: { x: -1, y: 50 } }] });
     invalid.push({ ...LEVEL_1, enemies: [{ id: 'bad', kind: 'blobling', x: 80, y: 80, patrolFrom: 90, patrolTo: 120, speed: 40 }] });
     invalid.push({ ...LEVEL_1, enemies: [{ id: 'bad', kind: 'wingling', x: 80, y: 80, patrolFrom: 20, patrolTo: 120, speed: 40, waveHeight: 0 }] });
+    invalid.push({ ...LEVEL_1, windZones: [{ x: 0, y: 0, width: 100, height: 100, strength: 1400 }] });
     invalid.push({ ...LEVEL_1, collectibles: [{ id: 'duplicate', kind: 'shard', x: 50, y: 50 }], enemies: [{ id: 'duplicate', kind: 'blobling', x: 80, y: 80, patrolFrom: 20, patrolTo: 120, speed: 40 }] });
     for (const value of invalid) expect(() => validateLevel(value)).toThrow();
   });

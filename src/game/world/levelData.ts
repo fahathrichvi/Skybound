@@ -16,6 +16,7 @@ export function validateLevel(value: unknown): asserts value is LevelConfig {
   if (!point(value.spawn) || value.spawn.x < 14 || value.spawn.x > value.width - 14 || value.spawn.y < 64 || value.spawn.y >= value.height) throw new Error('Spawn is outside the world.');
   if (!number(value.fallLimit) || value.fallLimit <= value.spawn.y || value.fallLimit > value.height) throw new Error('Invalid fall recovery boundary.');
   for (const key of ['terrain', 'platforms', 'signs', 'regions', 'collectibles', 'blocks', 'checkpoints', 'enemies']) if (!Array.isArray(value[key])) throw new Error(`Missing ${key} data.`);
+  if (value.windZones !== undefined && !Array.isArray(value.windZones)) throw new Error('Invalid wind data.');
   const terrain = value.terrain as unknown[];
   for (const tile of terrain) {
     if (!box(tile) || !record(tile) || ![tile.x, tile.y, tile.width, tile.height].every(integer) || tile.x < 0 || tile.y < 0 || (tile.x + tile.width) * 32 > value.width || (tile.y + tile.height) * 32 > value.height || !['grass', 'stone'].includes(String(tile.surface))) throw new Error('Invalid terrain rectangle.');
@@ -57,6 +58,9 @@ export function validateLevel(value: unknown): asserts value is LevelConfig {
     const enemy = checkObject(item, 'enemy');
     if (!['blobling', 'wingling'].includes(String(enemy.kind)) || !number(enemy.patrolFrom) || !number(enemy.patrolTo) || enemy.patrolFrom < 0 || enemy.patrolTo > worldWidth || enemy.patrolFrom >= enemy.patrolTo || enemy.x < enemy.patrolFrom || enemy.x > enemy.patrolTo || !number(enemy.speed) || enemy.speed < 1 || enemy.speed > 1000) throw new Error('Invalid enemy.');
     if (enemy.kind === 'wingling' && (!number(enemy.waveHeight) || enemy.waveHeight < 1 || enemy.waveHeight > 500)) throw new Error('Invalid Wingling wave.');
+  }
+  for (const zone of value.windZones ?? []) {
+    if (!box(zone) || !number(zone.strength) || zone.x < 0 || zone.y < 0 || zone.x + zone.width > worldWidth || zone.y + zone.height > worldHeight || Math.abs(zone.strength) > 1200) throw new Error('Invalid wind zone.');
   }
   if (value.exit !== undefined) checkObject(value.exit, 'exit');
   const spawn = value.spawn;

@@ -32,6 +32,12 @@ try {
   await page.getByRole('link', { name: /Play 1-1: Verdant Trail/ }).click();
   await page.getByText('1-1 / The Verdant Trail').waitFor();
   assert.equal(await page.locator('canvas').count(), 1);
+  await page.goto('http://127.0.0.1:5173/#/worlds');
+  await page.evaluate(() => localStorage.setItem('skybound.save.v1', JSON.stringify({ version: 1, totalScore: 5000, levels: { '1-1': { completed: true, completions: 1, bestScore: 5000, bestTimeMs: 90000, gems: 2, totalGems: 3 } } })));
+  await page.reload();
+  await page.getByRole('link', { name: /Play 1-2: Moonlit Grove/ }).click();
+  await page.getByText('1-2 / Moonlit Grove').waitFor();
+  assert.equal(await page.locator('canvas').count(), 1);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.screenshot({ path: 'artifacts/scene-mobile.png', fullPage: true });
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true);

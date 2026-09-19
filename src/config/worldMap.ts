@@ -5,8 +5,8 @@ export interface StageNode { readonly id: string; readonly title: string; readon
 
 export const EMERALD_VALLEY_STAGES: readonly StageNode[] = [
   { id: '1-1', title: 'Verdant Trail', subtitle: 'Firstlight Meadow', kind: 'trail', gemTotal: 3, available: true },
-  { id: '1-2', title: 'Moonlit Grove', subtitle: 'Coming in Stage 9', kind: 'stage', gemTotal: 3, available: false },
-  { id: '1-3', title: 'Canopy Crossing', subtitle: 'Coming in Stage 9', kind: 'stage', gemTotal: 3, available: false },
+  { id: '1-2', title: 'Moonlit Grove', subtitle: 'Whisperwind Canopy', kind: 'stage', gemTotal: 3, available: true },
+  { id: '1-3', title: 'Canopy Crossing', subtitle: 'Crosscurrent Rise', kind: 'stage', gemTotal: 3, available: true },
   { id: '1-B', title: 'Forest Guardian', subtitle: 'Boss encounter', kind: 'boss', gemTotal: 0, available: false },
 ] as const;
 

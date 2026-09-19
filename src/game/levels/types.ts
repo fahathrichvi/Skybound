@@ -7,6 +7,7 @@ export interface CollectibleConfig extends Point { readonly id: string; readonly
 export interface BlockConfig extends Point { readonly id: string; readonly kind: 'mystery' | 'breakable'; readonly reward?: number }
 export interface CheckpointConfig extends Point { readonly id: string; readonly respawn: Point }
 export interface ExitConfig extends Point { readonly id: string }
+export interface WindZoneConfig extends Point { readonly width: number; readonly height: number; readonly strength: number }
 export interface BloblingConfig extends Point { readonly id: string; readonly kind: 'blobling'; readonly patrolFrom: number; readonly patrolTo: number; readonly speed: number }
 export interface WinglingConfig extends Point { readonly id: string; readonly kind: 'wingling'; readonly patrolFrom: number; readonly patrolTo: number; readonly speed: number; readonly waveHeight: number }
 export type EnemyConfig = BloblingConfig | WinglingConfig;
@@ -19,4 +20,5 @@ export interface LevelConfig {
   readonly signs: readonly SignConfig[]; readonly regions: readonly RegionConfig[];
   readonly collectibles: readonly CollectibleConfig[]; readonly blocks: readonly BlockConfig[];
   readonly checkpoints: readonly CheckpointConfig[]; readonly enemies: readonly EnemyConfig[]; readonly exit?: ExitConfig;
+  readonly windZones?: readonly WindZoneConfig[];
 }

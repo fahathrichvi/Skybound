@@ -1,5 +1,5 @@
 /** Rename the game here; also update the HTML title and package name for distribution. */
-export const PROJECT = { name: 'Skybound Adventure', subtitle: 'Explore. Discover. Rise Beyond the Clouds.', developer: 'Fahath Richvi', version: '0.8.0', stage: 8 } as const;
+export const PROJECT = { name: 'Skybound Adventure', subtitle: 'Explore. Discover. Rise Beyond the Clouds.', developer: 'Fahath Richvi', version: '0.9.0', stage: 9 } as const;
 export const GAME_SIZE = { width: 1280, height: 720 } as const;
 export const WORLDS = [
   { name: 'Emerald Valley', label: 'Where the journey begins', color: '#9bd5a6' },
