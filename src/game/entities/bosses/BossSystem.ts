@@ -2,8 +2,8 @@ import Phaser from 'phaser';
 import type { BossConfig } from '../../levels/types';
 import type { Player } from '../player/Player';
 import type { WorldBuilder } from '../../world/WorldBuilder';
-import { isStomp } from '../enemies/EnemySystem';
 import { createForestGuardianArt } from './ForestGuardian';
+import { isGuardianStomp } from './GuardianCombat';
 
 export interface BossSnapshot { readonly name: string; readonly health: number; readonly maxHealth: number; readonly phase: number; readonly active: boolean; readonly defeated: boolean }
 export interface BossEvents { hurt(sourceX: number): boolean; announce(message: string): void; defeated(): void; phase(phase: number): void }
@@ -19,12 +19,14 @@ export class BossSystem {
   private root?: Phaser.GameObjects.Rectangle;
   private rootLiveUntil = 0;
   private lastPhase = 1;
+  private hitUntil = 0;
 
   constructor(private scene: Phaser.Scene, private config: BossConfig, private player: Player, world: WorldBuilder, private events: BossEvents) {
     createForestGuardianArt(scene); this.health = config.maxHealth;
     this.sprite = scene.physics.add.sprite(config.x, config.y, 'forest-guardian').setOrigin(.5, 1).setDepth(18);
     const body = this.sprite.body as Phaser.Physics.Arcade.Body;
-    body.setSize(106, 126).setOffset(27, 26).setImmovable(true).setAllowGravity(true);
+    // The crown hit area starts low enough to reach with Ari's standard held jump.
+    body.setSize(118, 96).setOffset(21, 60).setImmovable(true).setAllowGravity(true);
     scene.physics.add.collider(this.sprite, world.terrain); scene.physics.add.collider(this.sprite, world.solids);
     this.roots = scene.physics.add.staticGroup();
     scene.physics.add.overlap(player.sprite, this.sprite, () => this.contact());
@@ -41,8 +43,9 @@ export class BossSystem {
     if (!this.active || this.defeated) return;
     const body = this.player.body, boss = this.sprite.body as Phaser.Physics.Arcade.Body;
     const airborne = !body.blocked.down && !body.touching.down;
-    if (airborne && isStomp(body.prev.y + body.height, body.bottom, body.velocity.y, boss.top)) {
+    if (this.scene.time.now >= this.hitUntil && airborne && isGuardianStomp(body.prev.y + body.height, body.bottom, body.velocity.y, boss.top)) {
       this.health--; this.player.bounceFromEnemy(); this.sprite.setTint(0xe6cc91); this.scene.time.delayedCall(120, () => this.sprite.clearTint());
+      this.hitUntil = this.scene.time.now + 450;
       if (this.health <= 0) { this.defeated = true; this.sprite.disableBody(true, false); this.events.announce('The Forest Guardian is restored!'); this.events.defeated(); return; }
       const phase = this.phase(); if (phase !== this.lastPhase) { this.lastPhase = phase; this.events.phase(phase); this.events.announce(`Guardian phase ${phase} — the roots quicken!`); }
       this.nextAttackAt = this.scene.time.now + 900; return;
@@ -60,6 +63,6 @@ export class BossSystem {
   }
   private phase() { return this.health <= 1 ? 3 : this.health === 2 ? 2 : 1; }
   snapshot(): BossSnapshot { return { name: this.config.name, health: this.health, maxHealth: this.config.maxHealth, phase: this.phase(), active: this.active, defeated: this.defeated }; }
-  reset() { this.health = this.config.maxHealth; this.active = this.defeated = false; this.nextAttackAt = 0; this.lastPhase = 1; this.sprite.enableBody(false, this.config.x, this.config.y, true, true).clearTint(); if (this.root) { this.roots.remove(this.root, true, true); this.root = undefined; } }
+  reset() { this.health = this.config.maxHealth; this.active = this.defeated = false; this.nextAttackAt = this.hitUntil = 0; this.lastPhase = 1; this.sprite.enableBody(false, this.config.x, this.config.y, true, true).clearTint(); if (this.root) { this.roots.remove(this.root, true, true); this.root = undefined; } }
   destroy() { this.roots.destroy(true); this.sprite.destroy(); }
 }
