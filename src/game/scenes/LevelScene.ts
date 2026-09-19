@@ -10,6 +10,7 @@ import type { LevelConfig } from '../levels/types';
 import { GameObjectSystem } from '../objects/GameObjectSystem';
 import { FollowCamera } from '../systems/FollowCamera';
 import { RunProgress } from '../systems/RunProgress';
+import { remixLevel } from '../systems/RunRemix';
 import { ParallaxWorld } from '../world/ParallaxWorld';
 import { resolveLevel, regionAt } from '../world/levelData';
 import { WorldBuilder } from '../world/WorldBuilder';
@@ -42,6 +43,7 @@ export class LevelScene extends Phaser.Scene {
   private previousPlayerState = 'idle';
   private windNoticeId?: number;
   private activeWindZone?: number;
+  private remixSeed = 1;
 
   constructor(private bridge: GameBridge, private reducedMotion: boolean, private definition: unknown, key = 'Level') { super(key); }
 
@@ -49,12 +51,12 @@ export class LevelScene extends Phaser.Scene {
     this.userPaused = this.suspended = false;
     this.recoveries = 0; this.currentRegion = ''; this.nextDebugAt = this.nextRunAt = 0;
     this.completed = this.dying = this.gameOver = false; this.previousPlayerState = 'idle'; this.vitals.reset(); this.run.start(this.time.now);
-    const resolved = resolveLevel(this.definition, PRACTICE_LEVEL);
-    this.level = resolved.level;
-    if (resolved.warning) this.bridge.emit({ type: 'error', message: resolved.warning });
     const query = new URLSearchParams(location.search);
     this.debug = import.meta.env.DEV && query.get('debug') === 'true';
     this.debugSafe = this.debug && query.get('safe') === 'true';
+    const resolved = resolveLevel(this.definition, PRACTICE_LEVEL);
+    this.level = this.debug ? resolved.level : remixLevel(resolved.level, this.remixSeed++);
+    if (resolved.warning) this.bridge.emit({ type: 'error', message: resolved.warning });
     this.physics.world.setBounds(0, 0, this.level.width, this.level.height);
     this.scenery = new ParallaxWorld(this, this.level, this.reducedMotion);
     this.world = new WorldBuilder(this, this.level);
@@ -110,6 +112,7 @@ export class LevelScene extends Phaser.Scene {
         this.vitals.setLivesEnabled(!command.casualMode); this.emitCombat();
       }
     });
+    if (!this.debug && this.remixSeed > 2) this.bridge.emit({ type: 'announcement', message: 'New trail remix: patrols, rewards, and gusts have shifted.' });
     const blur = () => { this.userPaused = true; this.applyPause(); };
     const hidden = () => { if (document.hidden) blur(); };
     window.addEventListener('blur', blur); document.addEventListener('visibilitychange', hidden);
@@ -131,11 +134,7 @@ export class LevelScene extends Phaser.Scene {
   }
 
   private restartRun() {
-    this.completed = this.dying = this.gameOver = false; this.recoveries = 0; this.previousPlayerState = 'idle'; this.vitals.reset(); this.run.start(this.time.now);
-    this.objects.reset(); this.enemies.reset(); this.boss?.reset(); this.enemies.setDamageEnabled(!this.debugSafe); this.emitCombat(); this.emitBoss(); this.emitRun();
-    this.controls.clear(); this.player.reset(this.level.spawn.x, this.level.spawn.y);
-    this.notice.setVisible(false); this.followCamera.reset(); this.userPaused = false; this.applyPause();
-    if (!this.reducedMotion) this.cameras.main.fadeIn(240, 22, 53, 43);
+    this.scene.restart();
   }
 
   update(time: number, delta: number) {

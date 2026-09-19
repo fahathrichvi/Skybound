@@ -318,8 +318,10 @@ Added: `src/game/levels/world1/level2.ts`, `src/game/levels/world1/level3.ts`, a
 
 Modified: `src/game/levels/types.ts`, `src/game/levels/index.ts`, `src/game/world/levelData.ts`, `src/game/world/levelData.test.ts`, `src/game/scenes/LevelScene.ts`, `src/components/GameCanvas.tsx`, `src/app/App.tsx`, `src/config/worldMap.ts`, `src/config/project.ts`, `scripts/browser-check.mjs`, `package.json`, `package-lock.json`, and this README.
 
-## Known limits and next stage
+## Progression and replay variety
 
-Health pickups, difficulty presets, score combos, achievements, cloud sync, and multi-level unlock progression are not implemented yet. Completion records the current level but does not unlock another level. Platforms are stationary; moving-platform behavior is not implemented. Gamepad controls, physical mobile-device testing, PWA installation, and offline caching remain future work.
+Completing a route now offers **Next level**: World 1-1 leads to 1-2, then 1-3, then the Forest Guardian boss. Defeating the Guardian returns to the world map. Choosing **Replay level** starts a fresh run with a deterministic remix of optional collectible positions, mystery-block rewards, enemy starting patrols and speed, and wind strength. Core terrain and platform geometry remain unchanged so every route stays learnable and fair.
 
-**Next: Stage 10 - boss:** create the Forest Guardian with an introduction, health bar, attack phases, defeat flow, and World 1 completion. Stage 9 stops here and waits for the next development instruction.
+## Known limits
+
+Health pickups, difficulty presets, score combos, achievements, cloud sync, gamepad controls, physical mobile-device testing, PWA installation, and offline caching remain future work.

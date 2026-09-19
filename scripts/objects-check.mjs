@@ -80,7 +80,7 @@ try {
   assert.equal(saved.version, 1); assert.equal(saved.levels['1-1'].completed, true); assert.equal(saved.levels['1-1'].bestScore, state.run.score);
   assert.equal(saved.levels['1-1'].gems, state.objects.gems);
   await page.screenshot({ path: 'artifacts/stage4-complete.png', fullPage: true });
-  await page.getByRole('button', { name: 'Replay trail' }).click(); await settle();
+  await page.getByRole('button', { name: 'Replay level' }).click(); await settle();
   state = await read(); assert.deepEqual(state.objects, { shards: 0, totalShards: 38, gems: 0, totalGems: 3, respawn: { x: 192, y: 960 }, complete: false });
   assert.equal(state.objectBodies.activeCollectibles, 28); assert.equal(state.objectBodies.activeBlocks, 5); assert.equal(state.recoveries, 0); assert.equal(state.run.score, 0);
   await page.getByRole('link', { name: 'Explore the worlds' }).click();
