@@ -26,8 +26,10 @@ try {
   assert.equal(await page.locator('canvas').count(), 1);
   await page.screenshot({ path: 'artifacts/scene-desktop.png', fullPage: true });
   await page.getByRole('link', { name: 'Explore the worlds' }).click();
-  await expect(page.locator('.world-card')).toHaveCount(6);
-  await page.getByRole('link', { name: 'Explore the Verdant Trail' }).click();
+  await expect(page.locator('.stage-stop')).toHaveCount(4);
+  await expect(page.locator('.world-card')).toHaveCount(5);
+  await page.screenshot({ path: 'artifacts/stage8-world-map.png', fullPage: true });
+  await page.getByRole('link', { name: /Play 1-1: Verdant Trail/ }).click();
   await page.getByText('1-1 / The Verdant Trail').waitFor();
   assert.equal(await page.locator('canvas').count(), 1);
   await page.setViewportSize({ width: 390, height: 844 });

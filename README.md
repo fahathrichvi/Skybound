@@ -2,7 +2,7 @@
 
 An original fantasy browser platformer developed by **Fahath Richvi** with React, TypeScript, Vite, and Phaser 3. Ari, a small explorer with a saffron scarf, follows lost crystals through floating kingdoms.
 
-**Milestone: Stage 7 complete - UI polish and audio.** The game now has animated HUD feedback, refined panels and transitions, configurable local audio settings, and original synthesized music and sound cues that begin after the first scene interaction. The Stage 2 practice course remains available at `#/practice`.
+**Milestone: Stage 8 complete - world map and progression.** Emerald Valley now has a connected stage map with completion badges, saved gem totals, sequential unlocking, and a clear distinction between playable content and upcoming stages. The Stage 2 practice course remains available at `#/practice`.
 
 ## Run locally
 
@@ -24,7 +24,16 @@ npm run preview
 
 `dist/` is the production output. Hash-based routes work on static hosting without rewrite rules. Current asset paths assume hosting at the domain root. Set the name and version in `src/config/project.ts`; update HTML metadata and package metadata when renaming for distribution.
 
-## Stage 7 features
+## Stage 8 features
+
+- A dedicated Emerald Valley map with four connected nodes: Verdant Trail, Moonlit Grove, Canopy Crossing, and the Forest Guardian encounter.
+- The Verdant Trail is immediately playable; completing it unlocks the next node through the existing local save record.
+- Completed nodes show saved gem totals and best score directly on the map.
+- Locked, unlocked-but-upcoming, completed, and playable states are all represented accessibly without routing to unimplemented levels.
+- A future-world constellation keeps the five later kingdoms visible while clearly marking their skyways as sealed.
+- Pure progression tests cover the initial available node and the sequential unlock chain.
+
+## Stage 7 features retained
 
 - Original Web Audio music loop and sound cues for jumping, landing, collecting, checkpoints, blocks, enemy defeats, damage, defeat, completion, and menu actions.
 - Audio starts only after the first player interaction, respecting browser autoplay rules.
@@ -288,8 +297,14 @@ Added: `src/game/audio/AudioManager.ts`.
 
 Modified: `src/game/bridge.ts`, `src/game/bridge.test.ts`, `src/game/objects/GameObjectSystem.ts`, `src/game/scenes/LevelScene.ts`, `src/services/preferences.ts`, `src/components/GameCanvas.tsx`, `src/app/App.tsx`, `src/app/styles.css`, `src/config/project.ts`, `package.json`, `package-lock.json`, and this README.
 
+## Files added or modified in Stage 8
+
+Added: `src/config/worldMap.ts` and `src/config/worldMap.test.ts`.
+
+Modified: `src/app/App.tsx`, `src/app/styles.css`, `src/config/project.ts`, `scripts/browser-check.mjs`, `package.json`, `package-lock.json`, and this README.
+
 ## Known limits and next stage
 
 Health pickups, difficulty presets, score combos, achievements, cloud sync, and multi-level unlock progression are not implemented yet. Completion records the current level but does not unlock another level. Platforms are stationary; moving-platform behavior is not implemented. Gamepad controls, physical mobile-device testing, PWA installation, and offline caching remain future work.
 
-**Next: Stage 8 - world map:** stage selection, unlocking, completion indicators, and gem indicators. Stage 7 stops here and waits for the next development instruction.
+**Next: Stage 9 - more stages:** implement World 1-2 and World 1-3, then introduce additional enemies and mechanics. Stage 8 stops here and waits for the next development instruction.
