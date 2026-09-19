@@ -8,6 +8,7 @@ import type { ObjectSnapshot } from '../game/objects/ObjectProgress';
 import type { LevelResult, RunSnapshot } from '../game/systems/RunProgress';
 import { SaveService } from '../services/save';
 import { AudioManager, type AudioSettings } from '../game/audio/AudioManager';
+import type { BossSnapshot } from '../game/entities/bosses/BossSystem';
 
 const EMPTY_OBJECTS: ObjectSnapshot = { shards: 0, totalShards: 0, gems: 0, totalGems: 0, respawn: { x: 0, y: 0 }, complete: false };
 const EMPTY_COMBAT: CombatSnapshot = { hearts: 3, maxHearts: 3, lives: 3, maxLives: 3, deaths: 0, enemiesDefeated: 0, totalEnemies: 0 };
@@ -38,6 +39,7 @@ export function GameCanvas({ reducedMotion, casualMode, audioSettings, active = 
   const [objects, setObjects] = useState<ObjectSnapshot>(EMPTY_OBJECTS);
   const [combat, setCombat] = useState<CombatSnapshot>(EMPTY_COMBAT);
   const [run, setRun] = useState<RunSnapshot>(EMPTY_RUN);
+  const [boss, setBoss] = useState<BossSnapshot>();
   const [result, setResult] = useState<SavedResult>();
   const [gameOver, setGameOver] = useState(false);
   const [saveError, setSaveError] = useState(false);
@@ -68,6 +70,7 @@ export function GameCanvas({ reducedMotion, casualMode, audioSettings, active = 
       if (event.type === 'objects') { setObjects(event.snapshot); if (!event.snapshot.complete) setCompleted(false); }
       if (event.type === 'combat') setCombat(event.snapshot);
       if (event.type === 'run') setRun(event.snapshot);
+      if (event.type === 'boss') setBoss(event.snapshot.active ? event.snapshot : undefined);
       if (event.type === 'level-complete') {
         setObjects(event.snapshot); setCompleted(true); setGameOver(false);
         const saved = saveService.recordCompletion(event.result);
@@ -100,6 +103,7 @@ export function GameCanvas({ reducedMotion, casualMode, audioSettings, active = 
     {ready && <>
       <div className="practice-toolbar"><span><span className="live-dot" /> EMERALD VALLEY <small>{practice ? 'Movement practice / Stage 2' : `${levelId} / ${levelName}`}</small></span><div><button className="icon-button" onClick={restart} aria-label={practice ? 'Restart practice' : 'Restart trail'}><RotateCcw size={17} /></button><button className="icon-button" onClick={() => bridge.send({ type: 'pause' })} aria-label={practice ? 'Pause practice' : 'Pause trail'}><Pause size={17} /></button></div></div>
       {!practice && <><div className="region-label">{region}<small>SKYBOUND RUN / STAGE 7</small></div><div className="object-hud" aria-label="Level status"><span className="heart-row" aria-label={`${combat.hearts} of ${combat.maxHearts} hearts`}>{Array.from({ length: combat.maxHearts }, (_, index) => <Heart key={index} size={14} fill={index < combat.hearts ? 'currentColor' : 'none'} className={index < combat.hearts ? '' : 'empty-heart'} />)}{combat.lives === null ? <small>∞</small> : <small>× {combat.lives}</small>}</span><span><Sparkles size={15} /> {objects.shards}<small>/ {objects.totalShards}</small></span><span><Diamond size={15} /> {objects.gems}<small>/ {objects.totalGems}</small></span><span className="score-hud"><Trophy size={14} /> {run.score.toLocaleString()}</span>{objects.checkpointId && <span className="checkpoint-hud"><MapPin size={14} /> Checkpoint</span>}</div></>}
+      {boss && !boss.defeated && <div className="boss-hud" aria-label={`${boss.name}, phase ${boss.phase}`}><span>{boss.name}<small>PHASE {boss.phase}</small></span><div><i style={{ width: `${boss.health / boss.maxHealth * 100}%` }} /></div></div>}
       {announcement && <div className="object-toast" role="status">{announcement}</div>}
       <div className="movement-hint"><kbd>A</kbd><kbd>D</kbd> move <span>/</span><kbd>Space</kbd> jump <span>/</span><kbd>Shift</kbd> sprint <span>/</span> click scene to focus</div>
       <div className="touch-controls" aria-label="Touch movement controls"><div><TouchButton action="left" label="Move left" bridge={bridge}><ArrowLeft /></TouchButton><TouchButton action="right" label="Move right" bridge={bridge}><ArrowRight /></TouchButton></div><div><TouchButton action="sprint" label="Sprint" bridge={bridge}><Zap /></TouchButton><TouchButton action="jump" label="Jump" bridge={bridge}><ArrowUp /></TouchButton></div></div>

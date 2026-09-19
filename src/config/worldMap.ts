@@ -7,7 +7,7 @@ export const EMERALD_VALLEY_STAGES: readonly StageNode[] = [
   { id: '1-1', title: 'Verdant Trail', subtitle: 'Firstlight Meadow', kind: 'trail', gemTotal: 3, available: true },
   { id: '1-2', title: 'Moonlit Grove', subtitle: 'Whisperwind Canopy', kind: 'stage', gemTotal: 3, available: true },
   { id: '1-3', title: 'Canopy Crossing', subtitle: 'Crosscurrent Rise', kind: 'stage', gemTotal: 3, available: true },
-  { id: '1-B', title: 'Forest Guardian', subtitle: 'Boss encounter', kind: 'boss', gemTotal: 0, available: false },
+  { id: '1-B', title: 'Forest Guardian', subtitle: 'Boss encounter', kind: 'boss', gemTotal: 0, available: true },
 ] as const;
 
 export type StageMapState = 'available' | 'unlocked' | 'locked' | 'complete';

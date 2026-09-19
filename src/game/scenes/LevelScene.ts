@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import { GameBridge } from '../bridge';
 import { EnemySystem } from '../entities/enemies/EnemySystem';
+import { BossSystem } from '../entities/bosses/BossSystem';
 import { Player } from '../entities/player/Player';
 import { PlayerInput } from '../entities/player/PlayerInput';
 import { PlayerVitals, type DamageResult } from '../entities/player/PlayerVitals';
@@ -32,6 +33,7 @@ export class LevelScene extends Phaser.Scene {
   private notice!: Phaser.GameObjects.Text;
   private objects!: GameObjectSystem;
   private enemies!: EnemySystem;
+  private boss?: BossSystem;
   private vitals = new PlayerVitals();
   private run = new RunProgress();
   private completed = false;
@@ -69,15 +71,7 @@ export class LevelScene extends Phaser.Scene {
         this.bridge.emit({ type: 'objects', snapshot });
       },
       checkpoint: () => undefined,
-      complete: snapshot => {
-        this.completed = true; this.controls.clear(); this.player.body.setVelocity(0, 0);
-        this.enemies.setFrozen(true); this.enemies.setDamageEnabled(false);
-        const vitals = this.vitals.snapshot(this.time.now), enemies = this.enemies.snapshot();
-        const result = this.run.complete(this.time.now, { levelId: this.level.id, shards: snapshot.shards, totalShards: snapshot.totalShards,
-          gems: snapshot.gems, totalGems: snapshot.totalGems, enemiesDefeated: enemies.defeated, totalEnemies: enemies.total,
-          hearts: vitals.hearts, deaths: vitals.deaths });
-        this.emitRun(); this.bridge.emit({ type: 'level-complete', snapshot, result });
-      },
+      complete: snapshot => this.completeLevel(snapshot),
       announce: message => this.bridge.emit({ type: 'announcement', message }),
       sound: cue => this.bridge.emit({ type: 'sound', cue }),
     }, this.reducedMotion);
@@ -92,6 +86,7 @@ export class LevelScene extends Phaser.Scene {
       hurt: sourceX => this.damagePlayer(sourceX),
     });
     if (this.debugSafe) this.enemies.setDamageEnabled(false);
+    if (this.level.boss) this.boss = new BossSystem(this, this.level.boss, this.player, this.world, { hurt: sourceX => this.damagePlayer(sourceX), announce: message => this.bridge.emit({ type: 'announcement', message }), phase: () => this.emitBoss(), defeated: () => { this.bridge.emit({ type: 'sound', cue: 'complete' }); this.completeLevel(this.objects.snapshot()); } });
     this.physics.world.setBoundsCollision(true, true, true, false);
     this.notice = this.add.text(640, 130, '', { fontFamily: 'sans-serif', fontSize: '18px', color: '#f1f3d7', backgroundColor: '#1e493f', padding: { x: 18, y: 12 } }).setOrigin(.5).setScrollFactor(0).setDepth(80).setVisible(false);
     if (this.debug) this.world.drawDebug();
@@ -119,11 +114,11 @@ export class LevelScene extends Phaser.Scene {
     const hidden = () => { if (document.hidden) blur(); };
     window.addEventListener('blur', blur); document.addEventListener('visibilitychange', hidden);
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      unsubscribe(); this.controls.destroy(); this.enemies.destroy(); this.objects.destroy(); this.player.destroy(); this.world.destroy();
+      unsubscribe(); this.boss?.destroy(); this.controls.destroy(); this.enemies.destroy(); this.objects.destroy(); this.player.destroy(); this.world.destroy();
       window.removeEventListener('blur', blur); document.removeEventListener('visibilitychange', hidden); delete this.game.canvas.dataset.debug;
     });
     this.bridge.emit({ type: 'level', id: this.level.id, name: this.level.name });
-    this.emitCombat(); this.emitRun(); this.bridge.emit({ type: 'ready' });
+    this.emitCombat(); this.emitBoss(); this.emitRun(); this.bridge.emit({ type: 'ready' });
     if (!this.reducedMotion) this.cameras.main.fadeIn(350, 22, 53, 43);
     this.writeDebug();
   }
@@ -137,7 +132,7 @@ export class LevelScene extends Phaser.Scene {
 
   private restartRun() {
     this.completed = this.dying = this.gameOver = false; this.recoveries = 0; this.previousPlayerState = 'idle'; this.vitals.reset(); this.run.start(this.time.now);
-    this.objects.reset(); this.enemies.reset(); this.enemies.setDamageEnabled(!this.debugSafe); this.emitCombat(); this.emitRun();
+    this.objects.reset(); this.enemies.reset(); this.boss?.reset(); this.enemies.setDamageEnabled(!this.debugSafe); this.emitCombat(); this.emitBoss(); this.emitRun();
     this.controls.clear(); this.player.reset(this.level.spawn.x, this.level.spawn.y);
     this.notice.setVisible(false); this.followCamera.reset(); this.userPaused = false; this.applyPause();
     if (!this.reducedMotion) this.cameras.main.fadeIn(240, 22, 53, 43);
@@ -156,7 +151,7 @@ export class LevelScene extends Phaser.Scene {
     this.applyWind(delta);
     if (this.player.state === 'jump' && this.previousPlayerState !== 'jump') this.bridge.emit({ type: 'sound', cue: 'jump' });
     if (this.player.state === 'land' && this.previousPlayerState !== 'land') this.bridge.emit({ type: 'sound', cue: 'land' });
-    this.previousPlayerState = this.player.state; this.enemies.update(time, delta);
+    this.previousPlayerState = this.player.state; this.enemies.update(time, delta); this.boss?.update(time); this.emitBoss();
     const region = regionAt(this.level, this.player.sprite.x).name;
     if (region !== this.currentRegion) { this.currentRegion = region; this.bridge.emit({ type: 'region', name: region }); }
     this.followCamera.update(delta, this.player.body.velocity.x);
@@ -211,7 +206,15 @@ export class LevelScene extends Phaser.Scene {
     return { hearts: vitals.hearts, maxHearts: vitals.maxHearts, lives: vitals.lives, maxLives: vitals.maxLives, deaths: vitals.deaths,
       enemiesDefeated: enemies?.defeated ?? 0, totalEnemies: enemies?.total ?? this.level.enemies.length };
   }
+  private completeLevel(snapshot: import('../objects/ObjectProgress').ObjectSnapshot) {
+    if (this.completed) return;
+    this.completed = true; this.controls.clear(); this.player.body.setVelocity(0, 0); this.enemies.setFrozen(true); this.enemies.setDamageEnabled(false);
+    const vitals = this.vitals.snapshot(this.time.now), enemies = this.enemies.snapshot();
+    const result = this.run.complete(this.time.now, { levelId: this.level.id, shards: snapshot.shards, totalShards: snapshot.totalShards, gems: snapshot.gems, totalGems: snapshot.totalGems, enemiesDefeated: enemies.defeated, totalEnemies: enemies.total, hearts: vitals.hearts, deaths: vitals.deaths });
+    this.emitRun(); this.bridge.emit({ type: 'level-complete', snapshot, result });
+  }
   private emitCombat() { this.bridge.emit({ type: 'combat', snapshot: this.combatSnapshot() }); }
+  private emitBoss() { if (this.boss) this.bridge.emit({ type: 'boss', snapshot: this.boss.snapshot() }); }
   private emitRun() { this.bridge.emit({ type: 'run', snapshot: this.run.snapshot(this.time.now) }); }
 
   private writeDebug() {
