@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#b4d4c6"/><stop offset=".62" stop-color="#e5ead2"/><stop offset="1" stop-color="#83b9ae"/></linearGradient>
+ <linearGradient id="rock" x2=".5" y2="1"><stop stop-color="#406c5f"/><stop offset="1" stop-color="#153d39"/></linearGradient>
+ <linearGradient id="grass" x2="0" y2="1"><stop stop-color="#c4d77b"/><stop offset="1" stop-color="#518967"/></linearGradient>
+ <linearGradient id="water" x2="1" y2="0"><stop stop-color="#c7eddb" stop-opacity=".2"/><stop offset=".5" stop-color="#f0fff1" stop-opacity=".8"/><stop offset="1" stop-color="#a8d8cc" stop-opacity=".2"/></linearGradient>
+ <radialGradient id="sun"><stop stop-color="#ffffe0" stop-opacity=".9"/><stop offset="1" stop-color="#f5f6c9" stop-opacity="0"/></radialGradient>
+ <g id="tree"><path d="m0 0 6-136 10 136" fill="#45665a"/><path d="M10-176c-45-12-75 17-60 45-38 35-10 66 34 58 15 28 70 20 69-15 33-13 32-50 4-61-2-27-23-34-47-27" fill="#61917a"/><path d="M-38-133c-2-31 39-47 69-23 29-1 39 17 27 35-24-17-39 5-62-3-18 7-30 5-34-9" fill="#87ae85"/></g>
+ <g id="pine"><path d="m0 0 5-135 5 135" fill="#315e50"/><path d="m5-175-36 70h17l-35 52h26L-59-7H69L32-53h22l-33-52h18Z" fill="#3d7866"/></g>
+ <g id="crystal"><path d="m0-22 13 17L4 17-10 1Z" fill="#efe2a0"/><path d="m0-22 1 24 12-7Z" fill="#fff4c3"/><path d="m1 2 3 15-14-16Z" fill="#c6a861"/></g>
+</defs>
+<path fill="url(#sky)" d="M0 0h1600v1000H0z"/>
+<circle cx="1100" cy="225" r="350" fill="url(#sun)"/>
+<circle cx="1140" cy="183" r="53" fill="#fff9d6" opacity=".7"/>
+<g fill="#f9f8df" opacity=".55"><path d="M725 194c22-40 74-40 99-11 37-31 96-12 94 18h-193Z"/><path d="M1170 326c30-40 74-29 86-9 56-34 99-9 113 13h-210Z"/><path d="M204 135c25-30 74-20 79 0 35-19 74-12 89 12H195Z"/></g>
+<g fill="#8fb8ab" opacity=".4"><path d="m590 578 228-294 180 294Z"/><path d="m856 590 299-362 297 362Z"/><path d="m1250 631 274-286 206 286Z"/></g>
+<g fill="#d6e4d3" opacity=".65"><path d="m748 374 70-90 56 92-54-28-22 19-20-13Z"/><path d="m1084 314 71-86 89 107-78-31-23 22-30-26Z"/></g>
+<path d="M0 566Q182 425 375 548T753 535T1121 508T1600 459V1000H0Z" fill="#79a797" opacity=".45"/>
+<path d="M0 689Q236 526 488 663T907 634T1324 593T1600 670V1000H0Z" fill="#578d7f" opacity=".45"/>
+<!-- distant floating sanctuary -->
+<g transform="translate(1260 352) scale(.6)"><path d="m-116 0 27 72 40 9 28 60 49-43 33-6L119 0Z" fill="#6c9787"/><ellipse cy="-3" rx="125" ry="24" fill="#adca93"/><use href="#tree" x="-37" y="-12"/><use href="#pine" x="59" y="-9"/><path d="M-20 5v160h21V4" fill="url(#water)"/></g>
+<g transform="translate(671 470) scale(.4)"><path d="m-110 0 53 77 35-13 24 38 60-102Z" fill="#769c87"/><ellipse cy="-4" rx="112" ry="19" fill="#a1ba84"/><use href="#pine" x="-20" y="-4"/></g>
+<!-- hero island -->
+<path d="m793 633 21 70 49 25 28 79 62 21 34 120 57-59 43 12 27-87 68-24 17-66 65-27 36-67-110-41Z" fill="url(#rock)"/>
+<path d="m846 670 45 57 8 75 56 26 26 95-7-168-35-97Zm195 15 3 191 35-66 3-118Zm140-4-48 102 60-49 44-60Z" fill="#779078" opacity=".32"/>
+<path d="M784 628c31-36 85-32 128-46 58-20 97-16 138 0 30 8 107-4 139 17 40 1 77 17 83 35-23 43-111 50-150 45-51 17-94 5-133 10-52 11-88-14-123-11-54-3-79-16-82-50" fill="#356c51"/>
+<path d="M786 619c53-33 77-22 126-38 62-19 115-12 140 1 65 2 100-7 147 18 29-3 62 12 70 27-28 22-79 21-123 22-64 27-103 12-154 17-45 7-70-15-111-14-48-4-78-9-95-33" fill="url(#grass)"/>
+<path d="M979 604c-6 31 19 43 34 55 9 71-9 119-9 194 4 57-9 93-4 147h57c-1-47-16-88-7-135 12-71-12-139-11-208-32-16-32-30-25-52" fill="url(#water)"/>
+<g transform="translate(1184 598)"><use href="#tree" transform="scale(1.25)"/><use href="#tree" x="-76" y="-13" transform="scale(.65)"/></g>
+<g transform="translate(871 594)"><use href="#pine" transform="scale(.7)"/></g>
+<path d="m1079 623 19-72 43-14 35 72" fill="#526e58"/><path d="m1092 611 14-50 29-9 20 47" fill="#213f3b"/><path d="m1105 603 5-32 16-5 11 30" fill="#b5a1de"/><path d="m1120 572 5 14-6 14-5-14Z" fill="#e2cefa"/>
+<g fill="#e9df95"><circle cx="841" cy="620" r="3"/><circle cx="854" cy="613" r="3"/><circle cx="1161" cy="631" r="3"/><circle cx="1208" cy="617" r="3"/></g>
+<g transform="translate(997 562)"><use href="#crystal" transform="scale(.65)"/></g>
+<g transform="translate(1036 544)"><use href="#crystal" transform="scale(.7)"/></g>
+<g transform="translate(1076 535)"><use href="#crystal" transform="scale(.6)"/></g>
+<!-- Ari: original teal-cloaked explorer with long saffron scarf -->
+<g transform="translate(934 603)"><ellipse cy="24" rx="22" ry="6" fill="#355d49" opacity=".3"/><path d="m-12 8-4 18h11l7-17 4 17h11L14 5" fill="#273e3a"/><path d="m-10-22-10 29q20 12 40 0l-9-29" fill="#246c68"/><path d="m-11-14-16 20 8 4 14-17" fill="#408f7a"/><path d="M-12-30q-9-18 6-27 25-13 31 10l-2 23Z" fill="#32645b"/><path d="m-7-43 23-4 4 20q-18 15-26-1Z" fill="#efc696"/><path d="m-11-41 29-10 9 10-16 1-7-8-3 9Z" fill="#284c44"/><circle cx="14" cy="-34" r="2.5" fill="#283d38"/><path d="m-12-24 30-1 0 9-29 0Z" fill="#eab95a"/><path d="M-12-24q-29-10-40 3l-30-12 12 19q30 13 57-2" fill="#e8b151"/><path d="m20-5 6 11 5-1-5-17" fill="#e9c396"/><path d="M-17-18-24 0-12 4-6-13" fill="#b38a53"/></g>
+<!-- foreground land and foliage -->
+<path d="M0 880Q134 789 269 852T577 898L635 1000H0Z" fill="#255c51"/>
+<path d="M0 887Q114 789 269 852T577 898" fill="none" stroke="#6b9670" stroke-width="19"/>
+<path d="M1420 762q117-81 180-38v276h-269Z" fill="#1d5148"/>
+<path d="M1432 757q93-63 168-43" fill="none" stroke="#719572" stroke-width="17"/>
+<g transform="translate(1537 751) scale(1.85)"><use href="#pine"/></g>
+<g transform="translate(1585 772) scale(1.3)"><use href="#pine"/></g>
+<g fill="#183f39"><path d="M0 1000V749q86 59 76 145 39-65 94-78-2 84-79 132 91-33 144 14l-110 38Z"/><path d="M1600 1000V803q-61 52-76 130-41-57-78-43 13 54 59 79-86-39-103 31Z"/></g>
+</svg>
